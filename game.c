@@ -23,7 +23,16 @@ typedef struct {
 } Trader;
 
 void printItems(Trader t) {
+    if (t.items == NULL) {
+        DrawText("No items available", 300, 400, 40, RED);
+        return;
+    }
 
+    int y = 400; // Initial y position for drawing text
+    for (int i = 0; t.items[i] != NULL; i++) {
+        DrawText(t.items[i], 300, y, 20, WHITE);
+        y += 30; // Increase y position for next item
+    }
 }
 
 typedef struct {
@@ -63,7 +72,11 @@ int main() {
     InitWindow(WIDTH, HEIGHT, TITLE);
     SetTargetFPS(FPS);
 
-
+    // Example usage
+    Trader trader;
+    
+    // Initialize the trader struct with some items
+    trader.items = (const char *[]){"Item 1", "Item 2", "Item 3", NULL};
 
     Star *stars = NULL;
     Planet *planets = NULL;
@@ -116,6 +129,7 @@ int main() {
             if (selectedPlanetIndex != -1) {
                 DrawText(planetNames[planets[selectedPlanetIndex].nameIndex], WIDTH/2-50, 100, 40, WHITE);
                 DrawText("Press \"B\" to return to space", WIDTH-250, HEIGHT-100, 15, RED);
+                printItems(trader);
 
                 if (IsKeyPressed(KEY_B)) {
                     main_menu = true;
