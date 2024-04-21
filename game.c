@@ -19,6 +19,14 @@ const char *planetNames[] = {
 };
 
 typedef struct {
+    const char **items;
+} Trader;
+
+void printItems(Trader t) {
+
+}
+
+typedef struct {
     Vector2 position;
     int size;
 } Star;
@@ -107,6 +115,7 @@ int main() {
             ClearBackground(BLACK);
             if (selectedPlanetIndex != -1) {
                 DrawText(planetNames[planets[selectedPlanetIndex].nameIndex], WIDTH/2-50, 100, 40, WHITE);
+                DrawText("Press \"B\" to return to space", WIDTH-250, HEIGHT-100, 15, RED);
 
                 if (IsKeyPressed(KEY_B)) {
                     main_menu = true;
