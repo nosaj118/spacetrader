@@ -8,7 +8,7 @@
 #define STARCOUNT 200
 
 const char *TITLE = "Space Trader";
-//windows
+//win
 //test comment
 //test commit22384774
 typedef struct {
