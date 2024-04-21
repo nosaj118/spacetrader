@@ -9,6 +9,8 @@
 
 const char *TITLE = "Space Trader";
 
+//test comment
+
 typedef struct {
     Vector2 position;
     int size;
@@ -25,7 +27,7 @@ typedef struct {
 } Planet;
 
 void drawPlanet(Planet planet) {
-
+    DrawCircle(planet.position.x, planet.position.y, planet.radius, RAYWHITE);
 }
 
 int main() {
@@ -38,8 +40,8 @@ int main() {
 
     for (int i = 0; i < STARCOUNT; ++i) {
         Star star = {
-        .position = (Vector2){GetRandomValue(0, WIDTH), GetRandomValue(0, HEIGHT)},
-        .size = GetRandomValue(1, 6)
+            .position = (Vector2){GetRandomValue(0, WIDTH), GetRandomValue(0, HEIGHT)},
+            .size = GetRandomValue(1, 6)
         };
         arrput(stars, star);
     }
