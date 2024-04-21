@@ -6,6 +6,7 @@
 #define HEIGHT 1440
 #define FPS 60
 #define STARCOUNT 200
+#define PLANETCOUNT 5
 
 const char *TITLE = "Space Trader";
 //winfgfg
@@ -37,6 +38,7 @@ int main() {
     SetTargetFPS(FPS);
 
     Star *stars = NULL;
+    Planet *planets = NULL;
 
     for (int i = 0; i < STARCOUNT; ++i) {
         Star star = {
@@ -44,6 +46,15 @@ int main() {
             .size = GetRandomValue(1, 6)
         };
         arrput(stars, star);
+    }
+
+    for (int i = 0; i < PLANETCOUNT; ++i) {
+        Planet planet = {
+            .name = "Planet",
+            .position = (Vector2){GetRandomValue(0, WIDTH), GetRandomValue(0, HEIGHT)},
+            .radius = GetRandomValue(20, 50)
+        };
+        arrput(planets, planet);
     }
 
     while (!WindowShouldClose()) {
@@ -54,10 +65,14 @@ int main() {
             drawStar(stars[i]);
         }
 
+        for (int i = 0; i < arrlen(planets); ++i) {
+            drawPlanet(planets[i]);
+        }
+
         EndDrawing();
     }
     arrfree(stars);
-
+    arrfree(planets);
     CloseWindow();
     return 0;
 }
