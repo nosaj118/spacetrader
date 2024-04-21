@@ -1,0 +1,1 @@
+gcc game.c -o game.exe -Wall -I include/ -L lib/ -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows -lstdc++
