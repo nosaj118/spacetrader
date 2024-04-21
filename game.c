@@ -10,6 +10,14 @@
 
 const char *TITLE = "Space Trader";
 
+const char *planetNames[] = {
+    "Juptier",
+    "Alagesia",
+    "Someplace",
+    "Far Away",
+    "LOL LOL LOL"
+};
+
 typedef struct {
     Vector2 position;
     int size;
@@ -22,12 +30,12 @@ void drawStar(Star star) {
 typedef struct {
     Vector2 position;
     float radius;
-    const char* name;
+    int nameIndex;
 } Planet;
 
-void drawPlanet(Planet planet) {
+void drawPlanet(Planet planet, const char *name) {
     DrawCircle(planet.position.x, planet.position.y, planet.radius, RAYWHITE);
-    DrawText(planet.name, planet.position.x - 20, planet.position.y - 50, 15, WHITE);
+    DrawText(name, planet.position.x - 20, planet.position.y - 60, 15, WHITE);
 }
 
 bool clickedPlanet(Planet planet) {
@@ -47,11 +55,14 @@ int main() {
     InitWindow(WIDTH, HEIGHT, TITLE);
     SetTargetFPS(FPS);
 
+
+
     Star *stars = NULL;
     Planet *planets = NULL;
 
     bool main_menu = true;
     bool planet_menu = false;
+    int selectedPlanetIndex = -1;
 
     for (int i = 0; i < STARCOUNT; ++i) {
         Star star = {
@@ -63,7 +74,7 @@ int main() {
 
     for (int i = 0; i < PLANETCOUNT; ++i) {
         Planet planet = {
-            .name = "Planet",
+            .nameIndex = i,
             .position = (Vector2){GetRandomValue(0, WIDTH), GetRandomValue(0, HEIGHT)},
             .radius = GetRandomValue(20, 50)
         };
@@ -80,10 +91,11 @@ int main() {
             }
 
             for (int i = 0; i < arrlen(planets); ++i) {
-                drawPlanet(planets[i]);
+                drawPlanet(planets[i], planetNames[planets[i].nameIndex]);
                 if (clickedPlanet(planets[i])) {
                     main_menu = false;
                     planet_menu = true;
+                    selectedPlanetIndex = i;
                 }
             }
 
@@ -93,6 +105,14 @@ int main() {
         if (planet_menu) {
             BeginDrawing();
             ClearBackground(BLACK);
+            if (selectedPlanetIndex != -1) {
+                DrawText(planetNames[planets[selectedPlanetIndex].nameIndex], WIDTH/2-50, 100, 40, WHITE);
+
+                if (IsKeyPressed(KEY_B)) {
+                    main_menu = true;
+                    planet_menu = false;
+                }
+            }
             EndDrawing();
         }
     }
