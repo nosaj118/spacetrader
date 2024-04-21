@@ -1,0 +1,1 @@
+sudo clang -o game game.c -lraylib -lGL -lm -lpthread -lrt -lX11 -L.

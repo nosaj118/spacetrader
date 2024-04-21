@@ -10,7 +10,7 @@
 const char *TITLE = "Space Trader";
 
 //test comment
-
+//test commit2
 typedef struct {
     Vector2 position;
     int size;
