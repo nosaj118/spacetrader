@@ -9,9 +9,7 @@
 #define PLANETCOUNT 5
 
 const char *TITLE = "Space Trader";
-//winfgfg
-//test comment
-//test commit22384774
+
 typedef struct {
     Vector2 position;
     int size;
@@ -24,11 +22,23 @@ void drawStar(Star star) {
 typedef struct {
     Vector2 position;
     float radius;
-    char* name;
+    const char* name;
 } Planet;
 
 void drawPlanet(Planet planet) {
     DrawCircle(planet.position.x, planet.position.y, planet.radius, RAYWHITE);
+    DrawText(planet.name, planet.position.x - 20, planet.position.y - 50, 15, WHITE);
+}
+
+bool clickedPlanet(Planet planet) {
+    Vector2 mouse_pos = GetMousePosition();
+
+    if (CheckCollisionPointCircle(mouse_pos, planet.position, planet.radius)) {
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 int main() {
@@ -39,6 +49,9 @@ int main() {
 
     Star *stars = NULL;
     Planet *planets = NULL;
+
+    bool main_menu = true;
+    bool planet_menu = false;
 
     for (int i = 0; i < STARCOUNT; ++i) {
         Star star = {
@@ -58,18 +71,30 @@ int main() {
     }
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(BLACK);
+        if (main_menu) {
+            BeginDrawing();
+            ClearBackground(BLACK);
 
-        for (int i = 0; i < arrlen(stars); ++i) {
-            drawStar(stars[i]);
+            for (int i = 0; i < arrlen(stars); ++i) {
+                drawStar(stars[i]);
+            }
+
+            for (int i = 0; i < arrlen(planets); ++i) {
+                drawPlanet(planets[i]);
+                if (clickedPlanet(planets[i])) {
+                    main_menu = false;
+                    planet_menu = true;
+                }
+            }
+
+            EndDrawing();
         }
 
-        for (int i = 0; i < arrlen(planets); ++i) {
-            drawPlanet(planets[i]);
+        if (planet_menu) {
+            BeginDrawing();
+            ClearBackground(BLACK);
+            EndDrawing();
         }
-
-        EndDrawing();
     }
     arrfree(stars);
     arrfree(planets);
