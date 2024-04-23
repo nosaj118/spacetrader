@@ -7,6 +7,7 @@
 #define FPS 60
 #define STARCOUNT 200
 #define PLANETCOUNT 5
+#define CAMERASPEED 3.0f
 
 const char *TITLE = "Space Trader";
 
@@ -22,16 +23,16 @@ typedef struct {
     const char **items;
 } Trader;
 
-void printItems(Trader t) {
-    if (t.items == NULL) {
+void printItems(Trader trader) {
+    if (trader.items == NULL) {
         DrawText("No items available", 300, 400, 40, RED);
         return;
     }
 
-    int y = 400; // Initial y position for drawing text
-    for (int i = 0; t.items[i] != NULL; i++) {
-        DrawText(t.items[i], 300, y, 20, WHITE);
-        y += 30; // Increase y position for next item
+    int y = 400; 
+    for (int i = 0; trader.items[i] != NULL; i++) {
+        DrawText(trader.items[i], 300, y, 20, WHITE);
+        y += 30; 
     }
 }
 
@@ -50,15 +51,15 @@ typedef struct {
     int nameIndex;
 } Planet;
 
-void drawPlanet(Planet planet, const char *name) {
-    DrawCircle(planet.position.x, planet.position.y, planet.radius, RAYWHITE);
-    DrawText(name, planet.position.x - 20, planet.position.y - 60, 15, WHITE);
+void drawPlanet(Planet *planet, const char *name) {
+    DrawCircle(planet->position.x, planet->position.y, planet->radius, RAYWHITE);
+    DrawText(name, planet->position.x - 20, planet->position.y - 60, 15, WHITE);
 }
 
-bool clickedPlanet(Planet planet) {
+bool clickedPlanet(Planet *planet) {
     Vector2 mouse_pos = GetMousePosition();
 
-    if (CheckCollisionPointCircle(mouse_pos, planet.position, planet.radius)) {
+    if (CheckCollisionPointCircle(mouse_pos, planet->position, planet->radius)) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             return true;
         }
@@ -72,11 +73,26 @@ int main() {
     InitWindow(WIDTH, HEIGHT, TITLE);
     SetTargetFPS(FPS);
 
-    // Example usage
     Trader trader;
     
-    // Initialize the trader struct with some items
-    trader.items = (const char *[]){"Item 1", "Item 2", "Item 3", NULL};
+    Camera2D camera = {0};
+    camera.target = (Vector2){WIDTH/2.0f, HEIGHT/2.0f};
+    camera.offset = (Vector2){WIDTH/2.0f, HEIGHT/2.0f};
+    camera.rotation = 0.0f;
+    camera.zoom = 1.0f;
+
+    trader.items = (const char *[]){
+        "Artifacts", 
+        "Copper Ore", 
+        "Iron Ore",
+        "Electronics",
+        "Data Chips",
+        "Weapons",
+        "Armor Plating",
+        "Luxury Goods",
+        "Fuel Cells",
+        NULL
+        };
 
     Star *stars = NULL;
     Planet *planets = NULL;
@@ -104,7 +120,13 @@ int main() {
 
     while (!WindowShouldClose()) {
         if (main_menu) {
+            if (IsKeyDown(KEY_W)) camera.offset.y += CAMERASPEED;
+            if (IsKeyDown(KEY_S)) camera.offset.y -= CAMERASPEED;
+            if (IsKeyDown(KEY_A)) camera.offset.x += CAMERASPEED;
+            if (IsKeyDown(KEY_D)) camera.offset.x -= CAMERASPEED;
+
             BeginDrawing();
+            BeginMode2D(camera);
             ClearBackground(BLACK);
 
             for (int i = 0; i < arrlen(stars); ++i) {
@@ -112,14 +134,14 @@ int main() {
             }
 
             for (int i = 0; i < arrlen(planets); ++i) {
-                drawPlanet(planets[i], planetNames[planets[i].nameIndex]);
-                if (clickedPlanet(planets[i])) {
+                drawPlanet(&planets[i], planetNames[planets[i].nameIndex]);
+                if (clickedPlanet(&planets[i])) {
                     main_menu = false;
                     planet_menu = true;
                     selectedPlanetIndex = i;
                 }
             }
-
+            EndMode2D();
             EndDrawing();
         }
 
@@ -143,4 +165,4 @@ int main() {
     arrfree(planets);
     CloseWindow();
     return 0;
-}
+} 
